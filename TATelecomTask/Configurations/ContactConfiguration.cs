@@ -20,5 +20,6 @@ namespace TATelecomTask.configurations
                .HasIndex(c => c.MobileNumber)
                .IsUnique();
         }
+
     }
 }

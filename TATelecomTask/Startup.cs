@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using TATelecomTask.Contexts;
 
 namespace TATelecomTask
@@ -20,11 +22,26 @@ namespace TATelecomTask
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
 
             var masterConnectionString = Configuration.GetConnectionString("TaskDbConnection");
+
             services.AddDbContext<TaskDBContext>(options => options.UseSqlServer(masterConnectionString).EnableSensitiveDataLogging());
+
+            services.AddDefaultIdentity<IdentityUser>(options => {
+                options.Password.RequiredLength = Convert.ToInt32(Configuration["IdentitySettings:PasswordMinimumLength"]);
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
+            .AddEntityFrameworkStores<TaskDBContext>();
+
+            services.AddControllersWithViews();
+
+            services.AddRazorPages();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -44,6 +61,7 @@ namespace TATelecomTask
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -51,6 +69,8 @@ namespace TATelecomTask
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapRazorPages();
             });
         }
     }

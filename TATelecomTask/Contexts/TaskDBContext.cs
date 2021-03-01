@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TATelecomTask.configurations;
 using TATelecomTask.Domain;
 
 namespace TATelecomTask.Contexts
 {
-    public class TaskDBContext : DbContext
+    public class TaskDBContext : IdentityDbContext
     {
         public TaskDBContext(DbContextOptions<TaskDBContext> options) : base(options) { }
 
@@ -18,6 +19,16 @@ namespace TATelecomTask.Contexts
 
 
             base.OnModelCreating(modelBuilder);
+
+            SeedingContacts(modelBuilder);
+        }
+
+        private void SeedingContacts(ModelBuilder modelBuilder)
+        {
+            for (int i = 1; i < 101; i++)
+            {
+                modelBuilder.Entity<Contact>().HasData(Contact.New($"01060321{i}", i));
+            }
         }
     }
 }

@@ -12,5 +12,13 @@ namespace TATelecomTask.Domain
 
         public virtual Contact Contact { get; private set; }
 
+        internal static ContactLog New(string message)
+        {
+            return new ContactLog
+            {
+                CreationDate = DateTime.UtcNow,
+                Message = message
+            };
+        }
     }
 }

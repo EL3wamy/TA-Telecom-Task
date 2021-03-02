@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using TATelecomTask.Contexts;
+using TATelecomTask.Domain;
+using TATelecomTask.Repositories;
 
 namespace TATelecomTask
 {
@@ -40,6 +42,10 @@ namespace TATelecomTask
             services.AddControllersWithViews();
 
             services.AddRazorPages();
+
+
+            services.AddTransient<IContactLogRepo, ContactLogRepo>();
+            services.AddTransient<TaskDBContext>();
         }
 
 

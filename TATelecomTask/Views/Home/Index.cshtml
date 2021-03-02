@@ -1,8 +1,37 @@
-﻿@{
+﻿@using TATelecomTask.Enums;
+@model AddContactLogInputModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>it is about : sending Messages.</p>
+
+    <form asp-controller="Home" asp-action="PostMessage" method="post">
+        <input asp-for="Message" type="text" class="form-control" placeholder="Message" required>
+        <label  class="form-control border-0">@Html.ValidationMessageFor(model => model.Message) </label> 
+        <input type="submit" value="Send" class="btn btn-primary m-2 b-3" />
+    </form>
+
+    @if ((string)TempData["Status"] == SendStatus.Sended.ToString())
+    {
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>message sended successfully</strong>
+        </div>
+    }
+
+    @if ((string)TempData["Status"] ==SendStatus.NotSended.ToString())
+    {
+        <div class="alert alert-secondary alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>no more phone to send</strong>
+        </div>
+    }
 </div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
